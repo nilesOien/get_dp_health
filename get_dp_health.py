@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import do_known_query
@@ -9,8 +10,8 @@ tags_metadata = [
         "name": "getDPhealthApp",
         "description": "Virtual Solar Observatory data provider test end point.",
         "externalDocs": {
-            "description": "How this documentation was added",
-            "url": "https://fastapi.tiangolo.com/tutorial/metadata/#use-your-tags",
+            "description": "Small test web site",
+            "url": "http://localhost:8004",
         },
     },
     {
@@ -73,6 +74,10 @@ async def health_status_get(
 
 # The POST service front end, passes arguments back to do_known_query.vso_query() and returns the result.
 class dpHealthRequestClass(BaseModel):
+    """
+    This class defines what is passed into a POST request
+    """
+
     source: str = Field(..., min_length=1, description="VSO source (required)")
     instrument: str = Field(..., min_length=1, description="VSO instrument (required)")
 
@@ -87,3 +92,11 @@ async def health_status_post(request: dpHealthRequestClass):
     Returns the JSON response for a POST request.
     """
     return do_known_query.vso_query(request.instrument, request.source)
+
+
+# Simple web page that showing a test query
+getDPhealthApp.mount(
+    "/",
+    StaticFiles(directory="view_page", html=True, follow_symlink=True),
+    name="viewpage",
+)
