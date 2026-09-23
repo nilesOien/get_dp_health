@@ -7,11 +7,11 @@ function clear_results(){
 
 
 // Tell the user about what we found, wether we got it via GET or POST
-function put_results(responseObj){
+function put_results(responseObj, method){
 
   const para = document.getElementById('result_para');
 
-  h='';
+  h='The response using ' + method + ':<br>';
   for (const [key, value] of Object.entries(responseObj)) {
     h += '<b>' + key + '</b> : ' + value + '<br>';
   }
@@ -43,7 +43,7 @@ async function get_results_post(source, instrument){
     }
 
     const jsonResponse = await response.json(); // Parses the returning JSON data
-    put_results(jsonResponse);
+    put_results(jsonResponse, 'POST');
     } catch (error) {
      
        alert('Error during POST request:', error);
@@ -72,7 +72,7 @@ async function get_results_get(source, instrument){
     alert("Error parsing JSON from " + url + " : " + responseText, error.message);
     return;
   }
-  put_results(responseObj);
+  put_results(responseObj, 'GET');
   return;
 }
 
