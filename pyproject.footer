@@ -5,11 +5,11 @@
 # Need this for imports to work correctly in pytest.
 [tool.pytest.ini_options]
 pythonpath = ["."]
-# And need this to supress an problem deep in starlette
+# And need this to supress an problem deep in starlette, and a warning from Fido abput threads
 filterwarnings = [
     "error::DeprecationWarning",
     "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning",
+    "ignore:This download has been started in a thread which is not the main thread. You will not be able to interrupt the download."
 ]
-
 
 
