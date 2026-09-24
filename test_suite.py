@@ -8,6 +8,12 @@ from .get_dp_health import getDPhealthApp
 client = TestClient(getDPhealthApp)
 
 
+# See if we can get the list of options for known queries
+def test_getOptions():
+    response = client.get("/dp-health-options")
+    assert response.status_code == status.HTTP_200_OK
+
+
 # Test if we get good HTTP status (status 200) when we ask for the JSON via GET
 def test_getGoodStatusGet():
     response = client.get(
