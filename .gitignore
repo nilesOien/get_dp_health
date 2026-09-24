@@ -2,3 +2,5 @@ pyproject.toml
 uv.lock
 .venv
 __pycache__
+.env
+out_tmp

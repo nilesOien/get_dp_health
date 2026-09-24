@@ -10,13 +10,16 @@ client = TestClient(getDPhealthApp)
 
 # Test if we get good HTTP status (status 200) when we ask for the JSON via GET
 def test_getGoodStatusGet():
-    response = client.get("/get-dp-health-get?source=GONG&instrument=Learmonth")
+    response = client.get(
+        "/get-dp-health-get?provider=NSO&source=GONG&instrument=Learmonth"
+    )
     assert response.status_code == status.HTTP_200_OK
 
 
 # Test if we get good HTTP status (status 200) when we ask for the JSON via POST
 def test_getGoodStatusPost():
     response = client.post(
-        "/get-dp-health-post", json={"source": "GONG", "instrument": "Learmonth"}
+        "/get-dp-health-post",
+        json={"provider": "NSO", "source": "GONG", "instrument": "Learmonth"},
     )
     assert response.status_code == status.HTTP_200_OK

@@ -6,3 +6,6 @@ uvicorn
 email-validator
 pydantic
 pytest
+python-dotenv
+sqlalchemy
+sunpy[all]

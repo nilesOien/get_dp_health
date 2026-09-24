@@ -1,16 +1,20 @@
+<head>
 <title>VSO DP</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
 <H2>VSO Data Provider Status page</H2>
 
-<script src="get_results.js"></script>
+<script src="get_results.js"></script>
 
 <P>
- Source : <input type="text" id="source_box" placeholder="GONG">  <br>
- Instrument : <input type="text" id="instrument_box" placeholder="Learmonth"> <br>
- Use POST <input type="checkbox" id="use_post" value="no">
- <button onclick="get_results();">Execute</button>
- <button onclick="clear_results();">Clear</button>
-
+  Provider :  <input type="text" id="provider_box" placeholder="NSO">  <br>
+  Source : <input type="text" id="source_box" placeholder="GONG">  <br>
+  Instrument : <input type="text" id="instrument_box" placeholder="Learmonth"> <br>
+  Use POST <input type="checkbox" id="use_post" value="no">
+  <button onclick="get_results();">Execute</button>
+  <button onclick="clear_results();">Clear</button>
+  <button onclick="show_options();">Options</button>
 </P>
 
 <p id="result_para"></p>

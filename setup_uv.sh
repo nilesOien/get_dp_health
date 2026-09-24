@@ -28,3 +28,16 @@ mv pyproject.tmp pyproject.toml
 # Install the hook according to .pre-commit-config.yaml
 uv run pre-commit install
 
+# Write a .env file
+echo "DATABASE_URL=sqlite:///./database/q.db" > .env
+
+# Create temp output file
+mkdir out_tmp
+
+# Build the sqlite database
+cd database/
+./load_db.sh
+cd ..
+
+exit 0
+

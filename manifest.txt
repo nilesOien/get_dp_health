@@ -1,0 +1,23 @@
+
+The files here are :
+
+do_known_query.py ---- The underlying function that does the query
+get_dp_health.py ----- The FastAPI front end that has both POST and GET APIs
+__init__.py ---------- An empty shell, used so the directory is recognized as a Python package for pytest unit tests
+manifest.txt --------- This file
+pyproject.footer ----- Stuff to append to pyproject.toml after setup_uv.sh generates it
+README.md ------------ The git documentation
+requirements.txt ----- The list of Python packages to be installed by setup_uv.sh
+setup_uv.sh ---------- Setup of uv project - generally run this first (only once)
+start_server.sh ------ Script to start the server - generally run this second
+test_suite.py -------- pytest unit tests
+view_page/ ----------- Directory with web page in it
+    favicon.ico ------ favicon just so uvicorn server doesn't complain that it's missing
+    get_results.js --- javaScript for web page
+    index.html ------- HTML for web page
+    style.css -------- CSS for web page
+database/ ------------ Database of known queries, taken from Andy at https://github.com/aringlis/vso_health
+    load_db.py ------- Python to load CSV file into sqlite
+    load_db.sh ------- Bash to run the load_db.py Python
+    qdb.csv ---------- CSV file essentially from Andy
+

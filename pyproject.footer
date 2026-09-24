@@ -2,7 +2,7 @@
 # Stuff that gets appended to pyproject.toml after it 
 # is created by setup_uv.sh
 
-# Need this for imports to work correctly.
+# Need this for imports to work correctly in pytest.
 [tool.pytest.ini_options]
 pythonpath = ["."]
 # And need this to supress an problem deep in starlette

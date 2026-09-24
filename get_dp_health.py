@@ -22,6 +22,10 @@ tags_metadata = [
         "name": "get-dp-health-post",
         "description": "The API end point using the POST method",
     },
+    {
+        "name": "dp-health-options",
+        "description": "Get all the provider/source/instrument options for known queries",
+    },
 ]
 
 
@@ -47,8 +51,9 @@ class dpHealthResponseClass(BaseModel):
     This defines the schema for the JSON response.
     """
 
-    instrument: str
+    provider: str
     source: str
+    instrument: str
     status: str
     code: int
     execSec: float
@@ -63,13 +68,14 @@ class dpHealthResponseClass(BaseModel):
     tags=["get-dp-health-get"],
 )
 async def health_status_get(
-    source: str = Query(..., min_length=1, description="VSO source (required)"),
-    instrument: str = Query(..., min_length=1, description="VSO instrument (required)"),
+    provider: str = Query(..., min_length=1, description="VSO provider"),
+    source: str = Query(..., min_length=1, description="VSO source"),
+    instrument: str = Query(..., min_length=1, description="VSO instrument"),
 ):
     """
     Returns the JSON response for a GET request.
     """
-    return do_known_query.vso_query(instrument, source)
+    return do_known_query.vso_query(provider, source, instrument)
 
 
 # The POST service front end, passes arguments back to do_known_query.vso_query() and returns the result.
@@ -78,6 +84,7 @@ class dpHealthRequestClass(BaseModel):
     This class defines what is passed into a POST request
     """
 
+    provider: str = Field(..., min_length=1, description="VSO provider")
     source: str = Field(..., min_length=1, description="VSO source (required)")
     instrument: str = Field(..., min_length=1, description="VSO instrument (required)")
 
@@ -91,10 +98,35 @@ async def health_status_post(request: dpHealthRequestClass):
     """
     Returns the JSON response for a POST request.
     """
-    return do_known_query.vso_query(request.instrument, request.source)
+    return do_known_query.vso_query(
+        request.provider, request.source, request.instrument
+    )
 
 
-# Simple web page that showing a test query
+# Simple GET end point that shows options for provider, source, instrument for which we have a known query
+class optionsResponseClass(BaseModel):
+    """
+    This defines the schema for the options JSON response.
+    """
+
+    provider: str
+    source: str
+    instrument: str
+
+
+@getDPhealthApp.get(
+    "/dp-health-options",
+    response_model=list[optionsResponseClass],
+    tags=["dp-health-options"],
+)
+async def dp_health_options():
+    """
+    Returns the options for provider, source and instrument in JSON format.
+    """
+    return do_known_query.vso_options()
+
+
+# Simple web page that allows a query to be tested
 getDPhealthApp.mount(
     "/",
     StaticFiles(directory="view_page", html=True, follow_symlink=True),
