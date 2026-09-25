@@ -61,6 +61,23 @@ class dpHealthResponseClass(BaseModel):
     endTime: str
 
 
+# Note that for both the GET and POST end points, I do this :
+# def health_status..
+# I DON'T do this :
+# async def health_status...
+# even though that's what you see more often.
+#
+# The reason is (this is from AI) :
+# Otherwise, the whole server blocks during a check.
+# If the endpoints are async def, then vso_query is entirely blocking: the database query, the VSO search, and the download.
+# That would block the event loop, and with --workers 1, the server can't serve anything else while a check runs.
+# The simplest fix is to change the three endpoints to plain def. FastAPI then runs them in a thread pool, and the loop stays free.
+# Rule of thumb: use async def only when everything slow inside the function is awaited,
+# such as an async database driver or await dl.run_download().
+# If the function calls regular blocking libraries, which includes sunpy, SQLAlchemy's standard session, and requests, use plain def.
+#
+
+
 # The GET service front end, passes arguments back to do_known_query.vso_query() and returns the result.
 @getDPhealthApp.get(
     "/get-dp-health-get",

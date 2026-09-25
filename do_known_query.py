@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import UTC, datetime
 from typing import TypedDict
@@ -17,6 +18,8 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import sessionmaker
 from sunpy.net import Fido, vso
 from sunpy.net import attrs as a
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 DB_URL = os.getenv("DATABASE_URL")
@@ -104,7 +107,9 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
 
     (data_start_str, data_end_str) = row
 
-    # print(f"Known query data window for {provider},{source},{instrument} is {data_start_str} to {data_end_str}")
+    logger.info(
+        f"Known query data window for {provider},{source},{instrument} is {data_start_str} to {data_end_str}"
+    )
 
     data_start = datetime.strptime(data_start_str, "%Y-%m-%d %H:%M:%S.%f").replace(
         tzinfo=UTC
@@ -122,8 +127,8 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
             a.Instrument(instrument),
         )
         # The comment below is a way to get ruff to accept a blind exception catch
-    except Exception as e:  # noqa: BLE001
-        print(f"Query threw {e}")
+    except Exception:
+        logger.exception("Query threw exception")
         close_dict(return_dict, startTime, "Query threw an exception", -2)
         return return_dict
 
@@ -135,11 +140,16 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
     # print(f"Result size is {len(result)} :")
     # print(result)
 
-    # Try to download data, see how that goes.
+    # Try to download data, see how that goes. Need to set overwrite=True or if the
+    # data file already exists then the data will not be downloaded again.
     try:
-        files = Fido.fetch(result, path="./out_tmp/{file}", progress=False)
-    except Exception as e:  # noqa: BLE001
-        print(f"Download for {provider},{source},{instrument} threw an exception : {e}")
+        files = Fido.fetch(
+            result, path="./out_tmp/{file}", progress=False, overwrite=True
+        )
+    except Exception:
+        logger.exception(
+            f"Download for {provider},{source},{instrument} threw an exception"
+        )
         close_dict(return_dict, startTime, "Download threw an exception", -4)
         return return_dict
 

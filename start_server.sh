@@ -15,7 +15,7 @@ then
 fi
 
 # Run the server under UV management.
-uv run uvicorn get_dp_health:getDPhealthApp --host localhost --port 8004 --workers 1
+uv run uvicorn get_dp_health:getDPhealthApp --host localhost --port 8004 --workers 5 --timeout-graceful-shutdown 10
 
 exit 0
 
