@@ -84,7 +84,7 @@ class dpHealthResponseClass(BaseModel):
     response_model=dpHealthResponseClass,
     tags=["get-dp-health-get"],
 )
-async def health_status_get(
+def health_status_get(
     provider: str = Query(..., min_length=1, description="VSO provider"),
     source: str = Query(..., min_length=1, description="VSO source"),
     instrument: str = Query(..., min_length=1, description="VSO instrument"),
@@ -111,7 +111,7 @@ class dpHealthRequestClass(BaseModel):
     response_model=dpHealthResponseClass,
     tags=["get-dp-health-post"],
 )
-async def health_status_post(request: dpHealthRequestClass):
+def health_status_post(request: dpHealthRequestClass):
     """
     Returns the JSON response for a POST request.
     """
@@ -136,7 +136,7 @@ class optionsResponseClass(BaseModel):
     response_model=list[optionsResponseClass],
     tags=["dp-health-options"],
 )
-async def dp_health_options():
+def dp_health_options():
     """
     Returns the options for provider, source and instrument in JSON format.
     """

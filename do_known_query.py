@@ -108,7 +108,12 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
     (data_start_str, data_end_str) = row
 
     logger.info(
-        f"Known query data window for {provider},{source},{instrument} is {data_start_str} to {data_end_str}"
+        "Known query data window for %s,%s,%s is %s to %s",
+        provider,
+        source,
+        instrument,
+        data_start_str,
+        data_end_str,
     )
 
     data_start = datetime.strptime(data_start_str, "%Y-%m-%d %H:%M:%S.%f").replace(
@@ -148,7 +153,10 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
         )
     except Exception:
         logger.exception(
-            f"Download for {provider},{source},{instrument} threw an exception"
+            "Download for %s,%s,%s threw an exception",
+            provider,
+            source,
+            instrument,
         )
         close_dict(return_dict, startTime, "Download threw an exception", -4)
         return return_dict
