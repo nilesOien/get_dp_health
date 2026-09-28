@@ -54,6 +54,8 @@ class dpHealthResponseClass(BaseModel):
     provider: str
     source: str
     instrument: str
+    downloads_requested: int
+    downloads_done: int
     status: str
     code: int
     execSec: float
@@ -88,11 +90,15 @@ def health_status_get(
     provider: str = Query(..., min_length=1, description="VSO provider"),
     source: str = Query(..., min_length=1, description="VSO source"),
     instrument: str = Query(..., min_length=1, description="VSO instrument"),
+    num_downloads: int = Query(
+        1,
+        description="Number of downloads to try, if negative all are done, if 0 the downloads are skipped",
+    ),
 ):
     """
     Returns the JSON response for a GET request.
     """
-    return do_known_query.vso_query(provider, source, instrument)
+    return do_known_query.vso_query(provider, source, instrument, num_downloads)
 
 
 # The POST service front end, passes arguments back to do_known_query.vso_query() and returns the result.
@@ -102,8 +108,12 @@ class dpHealthRequestClass(BaseModel):
     """
 
     provider: str = Field(..., min_length=1, description="VSO provider")
-    source: str = Field(..., min_length=1, description="VSO source (required)")
-    instrument: str = Field(..., min_length=1, description="VSO instrument (required)")
+    source: str = Field(..., min_length=1, description="VSO source")
+    instrument: str = Field(..., min_length=1, description="VSO instrument")
+    num_downloads: int = Field(
+        1,
+        description="Number of downloads to try, if negative all are done, if 0 the downloads are skipped",
+    )
 
 
 @getDPhealthApp.post(
@@ -116,7 +126,7 @@ def health_status_post(request: dpHealthRequestClass):
     Returns the JSON response for a POST request.
     """
     return do_known_query.vso_query(
-        request.provider, request.source, request.instrument
+        request.provider, request.source, request.instrument, request.num_downloads
     )
 
 

@@ -46,13 +46,15 @@ known_queries_table = Table(
 )
 
 
-# Define what this function returns. Note that because whatthis function returns
+# Define what this function returns. Note that because what this function returns
 # is passed directly back thtough FastAPI, if you change this then you must also
 # change the dpHealthResponseClass pydantic class in the file get_dp_health.py
 class returnClass(TypedDict):
     provider: str
     source: str
     instrument: str
+    downloads_requested: int
+    downloads_done: int
     status: str
     code: int
     startTime: str
@@ -61,7 +63,7 @@ class returnClass(TypedDict):
 
 
 # Add the final items to the return dict before retruning it.
-def close_dict(return_dict, startTime, status, code):
+def close_dict(return_dict, startTime, status, code, downloads_done=0):
 
     return_dict["status"] = status
     return_dict["code"] = code
@@ -72,9 +74,12 @@ def close_dict(return_dict, startTime, status, code):
     return_dict["startTime"] = startTime.isoformat(timespec="milliseconds")
     return_dict["endTime"] = endTime.isoformat(timespec="milliseconds")
     return_dict["execSec"] = execSec
+    return_dict["downloads_done"] = downloads_done
 
 
-def vso_query(provider: str, source: str, instrument: str) -> returnClass:
+def vso_query(
+    provider: str, source: str, instrument: str, num_downloads: int
+) -> returnClass:
     """
     Method to do a known query given a source/instrument.
     This is passed back to the user through an API, see
@@ -89,6 +94,8 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
         "provider": provider,
         "source": source,
         "instrument": instrument,
+        "downloads_requested": num_downloads,
+        "downloads_done": 0,
     }
 
     t = known_queries_table.c
@@ -141,6 +148,14 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
         close_dict(return_dict, startTime, "Query returned zero results", -3)
         return return_dict
 
+    if num_downloads == 0:
+        close_dict(return_dict, startTime, "Query successful", 0)
+        return return_dict
+
+    num = len(result)
+    if num_downloads > 0:
+        num = min(num, num_downloads)
+
     # If we got here, the query worked.
     # print(f"Result size is {len(result)} :")
     # print(result)
@@ -149,7 +164,7 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
     # data file already exists then the data will not be downloaded again.
     try:
         files = Fido.fetch(
-            result, path="./out_tmp/{file}", progress=False, overwrite=True
+            result[:num], path="./out_tmp/{file}", progress=False, overwrite=True
         )
     except Exception:
         logger.exception(
@@ -165,7 +180,7 @@ def vso_query(provider: str, source: str, instrument: str) -> returnClass:
         close_dict(return_dict, startTime, "Download had errors", -5)
         return return_dict
 
-    close_dict(return_dict, startTime, "OK", 0)
+    close_dict(return_dict, startTime, "OK", 0, len(files))
     return return_dict
 
 

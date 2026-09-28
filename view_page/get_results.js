@@ -51,11 +51,11 @@ function put_results(responseObj, method){
 }
 
 // Use POST to fetch results
-async function get_results_post(provider, source, instrument){
+async function get_results_post(provider, source, instrument, num_downloads){
 
    const url='/get-dp-health-post';
 
-   payload = {'provider': provider, 'source': source, 'instrument': instrument};
+   payload = {'provider': provider, 'source': source, 'instrument': instrument, 'num_downloads': num_downloads};
    try {
    const response = await fetch(url, {
       method: 'POST',
@@ -84,8 +84,8 @@ async function get_results_post(provider, source, instrument){
 
 
 // Use GET to fetch results
-async function get_results_get(provider, source, instrument){
-  const url='/get-dp-health-get?provider=' + provider + '&source=' + source + '&instrument=' + instrument;
+async function get_results_get(provider, source, instrument, num_downloads){
+  const url='/get-dp-health-get?provider=' + provider + '&source=' + source + '&instrument=' + instrument + '&num_downloads=' + num_downloads;
 
   let response = await fetch(url);
 
@@ -109,15 +109,20 @@ async function get_results_get(provider, source, instrument){
 // This just fetches values, then looks to see if we want to use POST or GET and then does that
 function get_results(){
 
+  const para = document.getElementById('result_para');
+  para.innerHTML="Working (like, <em>REALLY</em> hard)...";
+
   const provider = document.getElementById('provider_box').value;
   const source = document.getElementById('source_box').value;
   const instrument = document.getElementById('instrument_box').value;
   const use_post = document.getElementById('use_post').checked;
+  const num_downloads = document.getElementById('num_downloads_box').value;
+
 
   if(use_post){
-    get_results_post(provider, source, instrument);
+    get_results_post(provider, source, instrument, num_downloads);
   } else {
-    get_results_get(provider, source, instrument);
+    get_results_get(provider, source, instrument, num_downloads);
   }
 
   return;
