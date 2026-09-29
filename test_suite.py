@@ -17,7 +17,7 @@ def test_getOptions():
 # Test if we get good HTTP status (status 200) when we ask for the JSON via GET
 def test_getGoodStatusGet():
     response = client.get(
-        "/get-dp-health-get?provider=NSO&source=GONG&instrument=Learmonth"
+        "/get-dp-health-get?provider=NSO&source=GONG&instrument=Learmonth&num_downloads=0"
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -26,6 +26,11 @@ def test_getGoodStatusGet():
 def test_getGoodStatusPost():
     response = client.post(
         "/get-dp-health-post",
-        json={"provider": "NSO", "source": "GONG", "instrument": "Learmonth"},
+        json={
+            "provider": "NSO",
+            "source": "GONG",
+            "instrument": "Learmonth",
+            "num_downloads": 0,
+        },
     )
     assert response.status_code == status.HTTP_200_OK
