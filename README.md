@@ -8,7 +8,7 @@ To run this :
 
 * Clone the repo and cd into the top level
 * Run the ```setup_uv.sh``` script
-* Run the ```start_server.sh``` script. It will tell you what URL is being served out.
+* Run the ```run_dp_health_server.sh``` script with a port number. It will tell you what URL is being served out.
 * Point a browser at the URL
 
 At the URL you can try things yourself, or follow he link to the API documentation.

@@ -109,15 +109,24 @@ async function get_results_get(provider, source, instrument, num_downloads){
 // This just fetches values, then looks to see if we want to use POST or GET and then does that
 function get_results(){
 
-  const para = document.getElementById('result_para');
-  para.innerHTML="Working (like, <em>REALLY</em> hard)...";
-
   const provider = document.getElementById('provider_box').value;
   const source = document.getElementById('source_box').value;
   const instrument = document.getElementById('instrument_box').value;
   const use_post = document.getElementById('use_post').checked;
   const num_downloads = document.getElementById('num_downloads_box').value;
 
+  if ( provider.length==0 || source.length==0 || instrument.length==0 || use_post.length==0 || num_downloads.length==0){
+    alert("Please fill out all fields");
+    return;
+  }
+
+  if (!(Number.isInteger(Number(num_downloads)))){
+    alert("Enter an integer for the maximum number of downloads");
+    return;
+  }
+
+  const para = document.getElementById('result_para');
+  para.innerHTML="Working (like, <em>REALLY</em> hard)...";
 
   if(use_post){
     get_results_post(provider, source, instrument, num_downloads);

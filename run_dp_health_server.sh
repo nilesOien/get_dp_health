@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ "$#" -ne 1 ]
+then
+ echo A port number is required on the command line, eg 8004
+ exit -1
+fi
+
+portnum="$1"
+
 # This starts the uvicorn server, which in turn
 # runs the code in get_dp_health.py. The syntax is :
 # uvicorn path:appName
@@ -15,7 +23,7 @@ then
 fi
 
 # Run the server under UV management.
-uv run uvicorn get_dp_health:getDPhealthApp --host localhost --port 8004 --workers 5 --timeout-graceful-shutdown 10
+uv run uvicorn get_dp_health:getDPhealthApp --host `hostname -f` --port "$portnum" --workers 5 --timeout-graceful-shutdown 10
 
 exit 0
 

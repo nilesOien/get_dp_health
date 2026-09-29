@@ -9,7 +9,7 @@ pyproject.footer ----- Stuff to append to pyproject.toml after setup_uv.sh gener
 README.md ------------ The git documentation
 requirements.txt ----- The list of Python packages to be installed by setup_uv.sh
 setup_uv.sh ---------- Setup of uv project - generally run this first (only once)
-start_server.sh ------ Script to start the server - generally run this second
+run_dp_health_server.sh - Script to start the server - generally run this second
 test_suite.py -------- pytest unit tests
 view_page/ ----------- Directory with web page in it
     favicon.ico ------ favicon just so uvicorn server doesn't complain that it's missing
